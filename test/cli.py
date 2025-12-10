@@ -11,6 +11,7 @@ from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
 from agents.strategy_agent import StrategyAgent
+from agents.multi_agent_orchestrator import MultiAgentOrchestrator
 from config.settings import settings
 
 

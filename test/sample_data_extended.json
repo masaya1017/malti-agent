@@ -1,0 +1,132 @@
+{
+    "customer_data": {
+        "market_size": 500000000000,
+        "growth_rate": 12.5,
+        "segments": [
+            "大企業",
+            "中小企業",
+            "スタートアップ"
+        ],
+        "needs": [
+            "コスト削減",
+            "業務効率化",
+            "DX推進"
+        ],
+        "buying_behavior": "年次予算で一括購入"
+    },
+    "competitor_data": {
+        "competitors": [
+            {
+                "name": "A社",
+                "type": "direct",
+                "revenue": 150000000000,
+                "strengths": [
+                    "ブランド力",
+                    "営業力"
+                ],
+                "cost_advantage": true
+            },
+            {
+                "name": "B社",
+                "type": "direct",
+                "revenue": 100000000000,
+                "strengths": [
+                    "技術力",
+                    "カスタマイズ性"
+                ],
+                "unique_features": [
+                    "AI機能",
+                    "クラウド対応"
+                ]
+            },
+            {
+                "name": "C社",
+                "type": "indirect",
+                "revenue": 80000000000,
+                "strengths": [
+                    "価格競争力"
+                ],
+                "niche_market": "中小企業向け"
+            }
+        ]
+    },
+    "company_data": {
+        "core_competencies": [
+            "技術力",
+            "顧客サポート",
+            "セキュリティ"
+        ],
+        "resources": {
+            "employees": 500,
+            "rd_budget": 5000000000
+        },
+        "value_proposition": "高セキュリティで使いやすいソリューション",
+        "market_position": "業界3位"
+    },
+    "market_analysis_data": {
+        "market_size": 500000000000,
+        "growth_rate": 12.5,
+        "market_segments": [
+            "大企業",
+            "中小企業",
+            "スタートアップ"
+        ],
+        "market_trends": [
+            "DX推進の加速",
+            "クラウドファーストの浸透",
+            "AI・機械学習の活用拡大",
+            "サイバーセキュリティ強化",
+            "リモートワーク対応"
+        ],
+        "customer_segments": [
+            {
+                "name": "大企業",
+                "size": 250000000000,
+                "growth_rate": 10.0,
+                "characteristics": [
+                    "大規模導入",
+                    "カスタマイズ要求高",
+                    "長期契約"
+                ]
+            },
+            {
+                "name": "中小企業",
+                "size": 180000000000,
+                "growth_rate": 15.0,
+                "characteristics": [
+                    "コスト重視",
+                    "導入スピード重視",
+                    "サポート重視"
+                ]
+            },
+            {
+                "name": "スタートアップ",
+                "size": 70000000000,
+                "growth_rate": 20.0,
+                "characteristics": [
+                    "柔軟性重視",
+                    "スケーラビリティ重視",
+                    "最新技術志向"
+                ]
+            }
+        ],
+        "market_share_data": {
+            "A社": 30.0,
+            "B社": 20.0,
+            "C社": 16.0,
+            "自社": 12.0,
+            "その他": 22.0
+        }
+    },
+    "financial_data": {
+        "revenue": 60000000000,
+        "cost_of_sales": 30000000000,
+        "operating_expenses": 20000000000,
+        "assets": 80000000000,
+        "liabilities": 30000000000,
+        "equity": 50000000000,
+        "cash_flow_operating": 15000000000,
+        "cash_flow_investing": -8000000000,
+        "cash_flow_financing": -3000000000
+    }
+}
