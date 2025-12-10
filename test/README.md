@@ -211,28 +211,26 @@ python cli.py check-config
 
 ## 使い方
 
-### 1. セットアップスクリプトの実行
+### 1. セットアップ
 
-初回のみ、仮想環境のセットアップを実行：
+初回のみ、仮想環境のセットアップと依存関係のインストールを実行：
 
 ```bash
 sh setup.sh
 ```
 
-### 2. マルチエージェント統合分析の実行（推奨）
+### 2. マルチエージェント統合分析の実行
 
 市場分析、財務分析、戦略分析を並列実行し、統合レポートを生成：
 
 ```bash
-source venv/bin/activate
 python3 run_multi_agent.py
 ```
 
-**出力**:
-- コンソールに分析結果を表示
-- `multi_agent_report.md` にマークダウンレポートを保存
-- `multi_agent_report.pptx` にPowerPointレポートを保存 ✨
-- `multi_agent_report.pdf` にPDFレポートを保存 ✨
+**生成されるファイル**:
+- ✅ `multi_agent_report.md` - マークダウン形式
+- ✅ `multi_agent_report.pptx` - PowerPoint形式
+- ✅ `multi_agent_report.pdf` - PDF形式（日本語対応、マークダウン内容を完全統合）
 
 **実行結果の例**:
 ```
@@ -248,69 +246,21 @@ python3 run_multi_agent.py
   成功率: 100.0%
 ```
 
-### 3. CLIコマンドでの分析（単一エージェント）
+**実行される機能**:
+- 🤖 **3つのエージェントによる並列分析**
+  - 市場分析エージェント
+  - 財務分析エージェント
+  - 戦略分析エージェント
+- 💬 **エージェント間対話**（3フェーズ）
+  - フェーズ1: 洞察の共有
+  - フェーズ2: 矛盾点の特定
+  - フェーズ3: 合意形成
+- 📄 **マルチフォーマット出力**
+  - Markdown、PowerPoint、PDFの3形式で自動生成
 
-戦略分析エージェントのみを実行：
+---
 
-```bash
-source venv/bin/activate
-
-# 基本的な使用（コンソール出力のみ）
-python3 cli.py analyze \
-  -c "クライアント名" \
-  -i "業界" \
-  -ch "課題" \
-  -f sample_data.json
-
-# PDF出力付き ✨
-python3 cli.py analyze \
-  -c "テクノロジー株式会社" \
-  -i "SaaS業界" \
-  -ch "新規事業の市場参入戦略" \
-  -f sample_data.json \
-  --export pdf
-
-# PowerPoint出力付き ✨
-python3 cli.py analyze \
-  -c "テクノロジー株式会社" \
-  -i "SaaS業界" \
-  -ch "新規事業の市場参入戦略" \
-  -f sample_data.json \
-  --export pptx
-
-# PDF + PowerPoint両方出力 ✨
-python3 cli.py analyze \
-  -c "テクノロジー株式会社" \
-  -i "SaaS業界" \
-  -ch "新規事業の市場参入戦略" \
-  -f sample_data.json \
-  --export all
-
-# 出力ファイル名を指定 ✨
-python3 cli.py analyze \
-  -c "テクノロジー株式会社" \
-  -i "SaaS業界" \
-  -ch "新規事業の市場参入戦略" \
-  -f sample_data.json \
-  --export pdf \
-  --output my_report
-```
-
-**オプション**:
-- `-c, --client`: クライアント名（必須）
-- `-i, --industry`: 業界（必須）
-- `-ch, --challenge`: 課題（必須）
-- `-f, --data-file`: データファイル（JSON）
-- `-e, --export`: レポート出力形式（`pdf`, `pptx`, `all`）✨
-- `-o, --output`: 出力ファイル名（拡張子なし）✨
-
-短縮オプション：
-
-```bash
-python3 cli.py analyze -c "テクノロジー株式会社" -i "SaaS業界" -ch "新規事業の市場参入戦略" -f sample_data.json
-```
-
-#### 市場・財務分析のみ実行
+市場・財務分析のみ実行
 
 ```bash
 source venv/bin/activate
@@ -403,9 +353,11 @@ python3 cli.py create-sample sample_data.json
 
 ### CLI
 
-- `analyze`: 戦略分析を実行
+- `analyze`: 戦略分析を実行（オプション: `--export pdf/pptx/all` でレポート出力）
 - `create-sample`: サンプルデータファイルを作成
 - `check-config`: 設定を確認
+
+---
 
 ## 実装済み機能
 
