@@ -1,7 +1,7 @@
 {
   "customer_data": {
     "market_size": 20000000000000.0,
-    "growth_rate": 10.0,
+    "growth_rate": 8.0,
     "segments": [
       "個人消費者",
       "中小企業",
@@ -10,20 +10,20 @@
     "needs": [
       "利便性",
       "価格競争力",
-      "多様な商品選択"
+      "豊富な商品選択"
     ],
-    "buying_behavior": "オンラインでの価格比較を重視し、レビューや評価を参考にする傾向が強い。"
+    "buying_behavior": "オンライン購買が主流で、価格比較とレビューを重視する傾向がある。"
   },
   "competitor_data": {
     "competitors": [
       {
         "name": "Amazon Japan",
         "type": "direct",
-        "revenue": 1700000000000.0,
+        "revenue": 1500000000000.0,
         "strengths": [
           "豊富な商品ラインナップ",
           "強力な物流ネットワーク",
-          "優れた顧客サービス"
+          "プライム会員制度"
         ],
         "cost_advantage": true,
         "unique_features": null,
@@ -34,9 +34,8 @@
         "type": "direct",
         "revenue": 500000000000.0,
         "strengths": [
-          "ポイントプログラム",
-          "親会社の資本力",
-          "多様な決済方法"
+          "ポイント制度",
+          "ソフトバンクとの連携"
         ],
         "cost_advantage": false,
         "unique_features": null,
@@ -54,12 +53,12 @@
       "employees": 20000,
       "rd_budget": 100000000000
     },
-    "value_proposition": "楽天エコシステムを通じた一貫したユーザー体験と豊富なポイント還元。",
-    "market_position": "国内Eコマース市場における主要プレイヤーの一つ。"
+    "value_proposition": "楽天エコシステムを通じた一貫したユーザー体験とポイントプログラムによる顧客ロイヤルティの向上。",
+    "market_position": "日本国内のEコマース市場での主要プレイヤーの一つ。"
   },
   "market_analysis_data": {
     "market_size": 20000000000000.0,
-    "growth_rate": 10.0,
+    "growth_rate": 8.0,
     "market_segments": [
       "B2C",
       "B2B",
@@ -73,22 +72,21 @@
     "customer_segments": [
       {
         "name": "個人消費者",
-        "size": 15000000000000.0,
-        "growth_rate": 8.0,
+        "size": 12000000000000.0,
+        "growth_rate": 9.0,
         "characteristics": [
-          "価格重視",
+          "価格敏感",
           "利便性重視",
           "レビュー重視"
         ]
       },
       {
         "name": "中小企業",
-        "size": 3000000000000.0,
-        "growth_rate": 12.0,
+        "size": 5000000000000.0,
+        "growth_rate": 7.0,
         "characteristics": [
-          "コスト削減志向",
-          "迅速な納品要求",
-          "カスタマイズ可能性"
+          "コスト効率",
+          "在庫管理の効率化"
         ]
       }
     ],
@@ -100,13 +98,13 @@
   },
   "financial_data": {
     "revenue": 1500000000000.0,
-    "cost_of_sales": 900000000000.0,
-    "operating_expenses": 400000000000.0,
+    "cost_of_sales": 1000000000000.0,
+    "operating_expenses": 300000000000.0,
     "assets": 2000000000000.0,
     "liabilities": 1200000000000.0,
     "equity": 800000000000.0,
     "cash_flow_operating": 200000000000.0,
-    "cash_flow_investing": -100000000000.0,
-    "cash_flow_financing": 50000000000.0
+    "cash_flow_investing": -50000000000.0,
+    "cash_flow_financing": 100000000000.0
   }
 }
