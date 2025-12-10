@@ -38,9 +38,10 @@ def main():
         **data
     }
     
-    # マルチエージェント分析を実行
-    orchestrator = MultiAgentOrchestrator()
+    # マルチエージェント分析を実行（対話機能を有効化）
+    orchestrator = MultiAgentOrchestrator(enable_dialogue=True)
     result = orchestrator.analyze_sync(project_data)
+
     
     # 統合レポートを表示
     console.print("\n" + "=" * 80)
@@ -48,12 +49,49 @@ def main():
     console.print("=" * 80 + "\n")
     console.print(result['integrated_report'])
     
-    # レポートをファイルに保存
-    output_file = Path(__file__).parent / 'multi_agent_report.md'
-    with open(output_file, 'w', encoding='utf-8') as f:
-        f.write(result['integrated_report'])
+    # レポートを複数形式で保存
+    base_path = Path(__file__).parent
+    report_generator = orchestrator.report_generator
     
-    console.print(f"\n[green]✓[/green] レポートを保存しました: {output_file}")
+    # マークダウン形式
+    md_file = base_path / 'multi_agent_report.md'
+    with open(md_file, 'w', encoding='utf-8') as f:
+        f.write(result['integrated_report'])
+    console.print(f"\n[green]✓[/green] マークダウンレポートを保存しました: {md_file}")
+    
+    # PowerPoint形式
+    try:
+        pptx_file = base_path / 'multi_agent_report.pptx'
+        report_generator.export_report(
+            project_info={
+                'client_name': project_data.get('client_name'),
+                'industry': project_data.get('industry'),
+                'challenge': project_data.get('challenge')
+            },
+            agent_results=result['agent_results'],
+            output_path=str(pptx_file),
+            export_format='pptx'
+        )
+        console.print(f"[green]✓[/green] PowerPointレポートを保存しました: {pptx_file}")
+    except Exception as e:
+        console.print(f"[yellow]⚠[/yellow] PowerPoint生成エラー: {str(e)}")
+    
+    # PDF形式
+    try:
+        pdf_file = base_path / 'multi_agent_report.pdf'
+        report_generator.export_report(
+            project_info={
+                'client_name': project_data.get('client_name'),
+                'industry': project_data.get('industry'),
+                'challenge': project_data.get('challenge')
+            },
+            agent_results=result['agent_results'],
+            output_path=str(pdf_file),
+            export_format='pdf'
+        )
+        console.print(f"[green]✓[/green] PDFレポートを保存しました: {pdf_file}")
+    except Exception as e:
+        console.print(f"[yellow]⚠[/yellow] PDF生成エラー: {str(e)}")
     
     # サマリーを表示
     summary = result['summary']
@@ -65,6 +103,7 @@ def main():
     console.print(f"  成功率: {summary['success_rate']:.1f}%")
     
     console.print("\n[green]✓ すべての分析が完了しました[/green]")
+
 
 
 if __name__ == '__main__':

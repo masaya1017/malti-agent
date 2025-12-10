@@ -1,6 +1,7 @@
 """統合レポート生成ユーティリティ"""
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from datetime import datetime
+from pathlib import Path
 
 
 class ReportGenerator:
@@ -8,7 +9,9 @@ class ReportGenerator:
     
     def __init__(self):
         """初期化"""
-        pass
+        self.pptx_generator = None
+        self.pdf_generator = None
+
     
     def generate_report(
         self,
@@ -48,6 +51,61 @@ class ReportGenerator:
         sections.append(self._generate_footer())
         
         return "\n\n".join(sections)
+    
+    def export_report(
+        self,
+        project_info: Dict[str, Any],
+        agent_results: List[Dict[str, Any]],
+        output_path: str,
+        export_format: str = 'markdown'
+    ) -> str:
+        """
+        指定された形式でレポートをエクスポート
+        
+        Args:
+            project_info: プロジェクト情報
+            agent_results: 各エージェントの分析結果
+            output_path: 出力ファイルパス
+            export_format: 出力形式 ('markdown', 'pptx', 'pdf')
+        
+        Returns:
+            生成されたファイルパス
+        """
+        if export_format == 'markdown':
+            # マークダウン形式
+            report_content = self.generate_report(project_info, agent_results)
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(report_content)
+            return output_path
+        
+        elif export_format == 'pptx':
+            # PowerPoint形式
+            if self.pptx_generator is None:
+                from utils.pptx_generator import PPTXGenerator
+                self.pptx_generator = PPTXGenerator()
+            
+            return self.pptx_generator.generate_report(
+                project_info, agent_results, output_path
+            )
+        
+        elif export_format == 'pdf':
+            # PDF形式（マークダウンレポートを統合）
+            if self.pdf_generator is None:
+                from utils.pdf_generator import PDFGenerator
+                self.pdf_generator = PDFGenerator()
+            
+            # マークダウンレポートを生成
+            markdown_report = self.generate_report(project_info, agent_results)
+            
+            # マークダウンレポートをPDFに変換
+            return self.pdf_generator.generate_report(
+                project_info, agent_results, output_path, markdown_report=markdown_report
+            )
+        
+        else:
+            raise ValueError(f"Unsupported export format: {export_format}")
+
+
     
     def _generate_header(self, project_info: Dict[str, Any]) -> str:
         """ヘッダーを生成"""

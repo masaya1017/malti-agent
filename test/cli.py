@@ -29,7 +29,9 @@ def cli():
 @click.option('--industry', '-i', required=True, help='業界')
 @click.option('--challenge', '-ch', required=True, help='課題')
 @click.option('--data-file', '-f', type=click.Path(exists=True), help='データファイル（JSON）')
-def analyze(client: str, industry: str, challenge: str, data_file: Optional[str]):
+@click.option('--export', '-e', type=click.Choice(['pdf', 'pptx', 'all'], case_sensitive=False), help='レポート出力形式')
+@click.option('--output', '-o', type=click.Path(), help='出力ファイル名（拡張子なし）')
+def analyze(client: str, industry: str, challenge: str, data_file: Optional[str], export: Optional[str], output: Optional[str]):
     """戦略分析を実行"""
     
     console.print(Panel.fit(
@@ -96,6 +98,62 @@ def analyze(client: str, industry: str, challenge: str, data_file: Optional[str]
                 console.print(f"{observation}\n")
     
     console.print("\n[green]✓ 分析完了[/green]")
+    
+    # レポート出力（--exportオプションが指定された場合）
+    if export:
+        from utils.report_generator import ReportGenerator
+        from pathlib import Path
+        
+        console.print(f"\n[yellow]レポートを生成中...[/yellow]")
+        
+        # 出力ファイル名の決定
+        base_name = output if output else f"{client}_analysis"
+        base_path = Path.cwd()
+        
+        # レポートジェネレーターを初期化
+        report_generator = ReportGenerator()
+        
+        # 分析結果を整形
+        agent_results = [{
+            'agent': 'StrategyAnalysisAgent',
+            'status': 'success',
+            'analysis_type': 'strategy',
+            'result': result,
+            'formatted_output': result.get('output', '')
+        }]
+        
+        project_info = {
+            'client_name': client,
+            'industry': industry,
+            'challenge': challenge
+        }
+        
+        # 出力形式に応じてレポート生成
+        if export == 'pdf' or export == 'all':
+            try:
+                pdf_path = base_path / f"{base_name}.pdf"
+                report_generator.export_report(
+                    project_info=project_info,
+                    agent_results=agent_results,
+                    output_path=str(pdf_path),
+                    export_format='pdf'
+                )
+                console.print(f"[green]✓[/green] PDFレポートを保存しました: {pdf_path}")
+            except Exception as e:
+                console.print(f"[yellow]⚠[/yellow] PDF生成エラー: {str(e)}")
+        
+        if export == 'pptx' or export == 'all':
+            try:
+                pptx_path = base_path / f"{base_name}.pptx"
+                report_generator.export_report(
+                    project_info=project_info,
+                    agent_results=agent_results,
+                    output_path=str(pptx_path),
+                    export_format='pptx'
+                )
+                console.print(f"[green]✓[/green] PowerPointレポートを保存しました: {pptx_path}")
+            except Exception as e:
+                console.print(f"[yellow]⚠[/yellow] PowerPoint生成エラー: {str(e)}")
 
 
 @cli.command()

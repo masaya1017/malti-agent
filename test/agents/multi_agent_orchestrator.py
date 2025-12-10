@@ -7,6 +7,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
 from agents.market_agent import MarketAgent
 from agents.financial_agent import FinancialAgent
 from agents.strategy_analysis_agent import StrategyAnalysisAgent
+from agents.dialogue_manager import DialogueManager
 from utils.report_generator import ReportGenerator
 
 
@@ -16,12 +17,20 @@ console = Console()
 class MultiAgentOrchestrator:
     """複数のエージェントを管理し、協調して分析を実行"""
     
-    def __init__(self):
-        """初期化"""
+    def __init__(self, enable_dialogue: bool = True):
+        """
+        初期化
+        
+        Args:
+            enable_dialogue: エージェント間対話を有効にするか
+        """
         self.market_agent = MarketAgent()
         self.financial_agent = FinancialAgent()
         self.strategy_agent = StrategyAnalysisAgent()
+        self.dialogue_manager = DialogueManager() if enable_dialogue else None
         self.report_generator = ReportGenerator()
+        self.enable_dialogue = enable_dialogue
+
     
     async def analyze(self, project_data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -90,6 +99,25 @@ class MultiAgentOrchestrator:
         # 結果のサマリーを表示
         self._print_summary(agent_results)
         
+        # エージェント間対話フェーズ（有効な場合）
+        dialogue_result = None
+        if self.enable_dialogue and self.dialogue_manager:
+            try:
+                dialogue_result = await self.dialogue_manager.facilitate_dialogue(
+                    agent_results=agent_results,
+                    project_info={
+                        'client_name': project_data.get('client_name', 'N/A'),
+                        'industry': project_data.get('industry', 'N/A'),
+                        'challenge': project_data.get('challenge', 'N/A')
+                    }
+                )
+            except Exception as e:
+                console.print(f"[yellow]⚠ 対話フェーズでエラーが発生しました: {str(e)}[/yellow]")
+                dialogue_result = {
+                    'dialogue_occurred': False,
+                    'error': str(e)
+                }
+        
         # 統合レポートを生成
         integrated_report = self.report_generator.generate_report(
             project_info={
@@ -100,11 +128,24 @@ class MultiAgentOrchestrator:
             agent_results=agent_results
         )
         
+        # 対話結果をレポートに追加
+        if dialogue_result and dialogue_result.get('dialogue_occurred'):
+            dialogue_section = self.dialogue_manager.format_dialogue_report(dialogue_result)
+            if dialogue_section:
+                # レポートの推奨事項の前に対話結果を挿入
+                parts = integrated_report.split('## 統合的な推奨事項')
+                if len(parts) == 2:
+                    integrated_report = parts[0] + dialogue_section + "\n\n---\n\n## 統合的な推奨事項" + parts[1]
+                else:
+                    integrated_report += "\n\n" + dialogue_section
+        
         return {
             'agent_results': agent_results,
+            'dialogue_result': dialogue_result,
             'integrated_report': integrated_report,
             'summary': self._generate_summary(agent_results)
         }
+
     
     async def _run_with_progress(
         self,

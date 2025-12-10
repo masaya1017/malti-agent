@@ -230,10 +230,16 @@ python3 run_multi_agent.py
 
 **出力**:
 - コンソールに分析結果を表示
-- `multi_agent_report.md` に統合レポートを保存
+- `multi_agent_report.md` にマークダウンレポートを保存
+- `multi_agent_report.pptx` にPowerPointレポートを保存 ✨
+- `multi_agent_report.pdf` にPDFレポートを保存 ✨
 
 **実行結果の例**:
 ```
+✓ マークダウンレポートを保存しました: multi_agent_report.md
+✓ PowerPointレポートを保存しました: multi_agent_report.pptx
+✓ PDFレポートを保存しました: multi_agent_report.pdf
+
 分析サマリー
   総エージェント数: 3
   成功: 3
@@ -242,18 +248,61 @@ python3 run_multi_agent.py
   成功率: 100.0%
 ```
 
-### 3. 個別分析の実行
+### 3. CLIコマンドでの分析（単一エージェント）
 
-#### 戦略分析のみ実行
+戦略分析エージェントのみを実行：
 
 ```bash
 source venv/bin/activate
+
+# 基本的な使用（コンソール出力のみ）
 python3 cli.py analyze \
-  --client "テクノロジー株式会社" \
-  --industry "SaaS業界" \
-  --challenge "新規事業の市場参入戦略" \
-  --data-file sample_data.json
+  -c "クライアント名" \
+  -i "業界" \
+  -ch "課題" \
+  -f sample_data.json
+
+# PDF出力付き ✨
+python3 cli.py analyze \
+  -c "テクノロジー株式会社" \
+  -i "SaaS業界" \
+  -ch "新規事業の市場参入戦略" \
+  -f sample_data.json \
+  --export pdf
+
+# PowerPoint出力付き ✨
+python3 cli.py analyze \
+  -c "テクノロジー株式会社" \
+  -i "SaaS業界" \
+  -ch "新規事業の市場参入戦略" \
+  -f sample_data.json \
+  --export pptx
+
+# PDF + PowerPoint両方出力 ✨
+python3 cli.py analyze \
+  -c "テクノロジー株式会社" \
+  -i "SaaS業界" \
+  -ch "新規事業の市場参入戦略" \
+  -f sample_data.json \
+  --export all
+
+# 出力ファイル名を指定 ✨
+python3 cli.py analyze \
+  -c "テクノロジー株式会社" \
+  -i "SaaS業界" \
+  -ch "新規事業の市場参入戦略" \
+  -f sample_data.json \
+  --export pdf \
+  --output my_report
 ```
+
+**オプション**:
+- `-c, --client`: クライアント名（必須）
+- `-i, --industry`: 業界（必須）
+- `-ch, --challenge`: 課題（必須）
+- `-f, --data-file`: データファイル（JSON）
+- `-e, --export`: レポート出力形式（`pdf`, `pptx`, `all`）✨
+- `-o, --output`: 出力ファイル名（拡張子なし）✨
 
 短縮オプション：
 
@@ -364,12 +413,13 @@ python3 cli.py create-sample sample_data.json
 ✅ **7つの分析フレームワーク**: 3C、SWOT、5Forces、PEST、Value Chain、市場分析、財務分析  
 ✅ **並列実行**: asyncioによる高速な分析処理  
 ✅ **統合レポート生成**: マークダウン形式の包括的レポート  
+✅ **マルチフォーマット出力**: PowerPoint/PDF形式でのレポートエクスポート ✨  
+✅ **エージェント間対話**: 分析結果の議論と合意形成機能 ✨  
 ✅ **CLIインターフェース**: コマンドラインからの簡単実行  
 
 ## 今後の拡張可能性
 
-1. **エージェント間対話**: エージェント同士が議論・合意形成する機能
-2. **Webインターフェース**: FastAPI + Reactでのダッシュボード
+1. **Webインターフェース**: FastAPI + Reactでのダッシュボード
 3. **データベース統合**: PostgreSQLでのプロジェクト・履歴管理
 4. **レポート出力**: PowerPoint/PDF形式でのエクスポート
 5. **学習機能**: 過去の分析結果からの学習・改善
