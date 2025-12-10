@@ -267,6 +267,95 @@ source venv/bin/activate
 python3 run_additional_analysis.py
 ```
 
+### 3. CLI経由でのマルチエージェント分析（推奨）
+
+企業名を指定するだけで、OpenAI APIから自動的に企業情報を取得し、マルチエージェント分析を実行します。
+
+#### 基本的な使い方
+
+```bash
+python3 cli.py multi-analyze --client "企業名"
+```
+
+**例: 任天堂の分析**
+```bash
+python3 cli.py multi-analyze --client "任天堂" --industry "ゲーム業界" --challenge "グローバル市場での競争力強化"
+```
+
+#### 主なオプション
+
+- `--client` / `-c`: クライアント名（必須）
+- `--industry` / `-i`: 業界（省略可、OpenAIが推定）
+- `--challenge` / `-ch`: 課題（省略可、デフォルトで一般的な戦略分析）
+- `--export` / `-e`: レポート出力形式（`pdf`, `pptx`, `md`, `all`）
+- `--output` / `-o`: 出力ファイル名（拡張子なし）
+- `--output-dir` / `-d`: 出力ディレクトリ（デフォルト: `reports`）
+- `--save-data`: 取得したデータを保存するファイルパス
+- `--auto-fetch` / `--no-auto-fetch`: OpenAI APIから自動取得（デフォルト: 有効）
+- `--enable-dialogue` / `--no-dialogue`: エージェント間対話を有効化（デフォルト: 有効）
+
+#### 使用例
+
+**例1: 最小限のオプションで実行**
+```bash
+python3 cli.py multi-analyze --client "トヨタ自動車"
+```
+
+**例2: すべての形式でレポート出力**
+```bash
+python3 cli.py multi-analyze \
+  --client "ソニー" \
+  --industry "エレクトロニクス" \
+  --challenge "グローバル競争力強化" \
+  --export all \
+  --output sony_analysis
+```
+
+生成されるファイル（`reports`ディレクトリ内）:
+- `sony_analysis.md`
+- `sony_analysis.pdf`
+- `sony_analysis.pptx`
+
+**例3: データを保存して再利用**
+
+データを取得して保存:
+```bash
+python3 cli.py multi-analyze \
+  --client "楽天" \
+  --industry "Eコマース" \
+  --save-data rakuten_data.json \
+  --export md
+```
+
+保存したデータを再利用（OpenAI APIを呼び出さない）:
+```bash
+python3 cli.py multi-analyze \
+  --client "楽天" \
+  --no-auto-fetch \
+  --data-file rakuten_data.json \
+  --export pdf
+```
+
+**例4: カスタム出力ディレクトリを指定**
+```bash
+python3 cli.py multi-analyze \
+  --client "パナソニック" \
+  --export all \
+  --output-dir analysis_results/panasonic
+```
+
+#### 実行される機能
+
+- 🤖 **OpenAI APIによる自動データ取得**: 企業情報を自動収集
+- 📊 **3つのエージェントによる並列分析**:
+  - 市場分析エージェント
+  - 財務分析エージェント
+  - 戦略分析エージェント
+- 💬 **エージェント間対話**: 分析結果の議論と合意形成
+- 📄 **マルチフォーマット出力**: Markdown、PowerPoint、PDFの3形式で自動生成
+
+---
+
 ### 4. サンプルデータの作成
 
 ```bash
@@ -354,6 +443,7 @@ python3 cli.py create-sample sample_data.json
 ### CLI
 
 - `analyze`: 戦略分析を実行（オプション: `--export pdf/pptx/all` でレポート出力）
+- `multi-analyze`: マルチエージェント統合分析を実行（OpenAI APIで自動データ取得）
 - `create-sample`: サンプルデータファイルを作成
 - `check-config`: 設定を確認
 
@@ -362,12 +452,14 @@ python3 cli.py create-sample sample_data.json
 ## 実装済み機能
 
 ✅ **マルチエージェントシステム**: 市場・財務・戦略の3つのエージェントが協調動作  
+✅ **OpenAI自動データ取得**: 企業名を指定するだけで情報を自動収集 ✨  
 ✅ **7つの分析フレームワーク**: 3C、SWOT、5Forces、PEST、Value Chain、市場分析、財務分析  
 ✅ **並列実行**: asyncioによる高速な分析処理  
 ✅ **統合レポート生成**: マークダウン形式の包括的レポート  
 ✅ **マルチフォーマット出力**: PowerPoint/PDF形式でのレポートエクスポート ✨  
 ✅ **エージェント間対話**: 分析結果の議論と合意形成機能 ✨  
 ✅ **CLIインターフェース**: コマンドラインからの簡単実行  
+✅ **レポート出力ディレクトリ**: 整理されたフォルダ構造でレポート管理 ✨  
 
 ## 今後の拡張可能性
 
