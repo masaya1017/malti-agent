@@ -9,6 +9,8 @@ from langchain.tools import StructuredTool
 from frameworks.three_c_analysis import ThreeCAnalysis
 from frameworks.swot_analysis import SWOTAnalysis
 from frameworks.five_forces import FiveForcesAnalysis
+from frameworks.pest_analysis import PESTAnalysis
+from frameworks.value_chain import ValueChainAnalysis
 from config.settings import settings
 
 
@@ -36,6 +38,8 @@ class StrategyAgent:
 - 3C分析: 顧客(Customer)、競合(Competitor)、自社(Company)の観点から分析
 - SWOT分析: 強み、弱み、機会、脅威を分析し、クロスSWOT戦略を導出
 - 5Forces分析: 業界構造を分析し、収益性と競争環境を評価
+- PEST分析: 政治、経済、社会、技術の観点からマクロ環境を分析
+- バリューチェーン分析: 主活動と支援活動を分析し、価値創造ポイントと競争優位性を特定
 
 分析結果は具体的で実行可能な戦略提案にまとめてください。
 """
@@ -44,6 +48,8 @@ class StrategyAgent:
             self._create_3c_analysis_tool(),
             self._create_swot_analysis_tool(),
             self._create_5forces_analysis_tool(),
+            self._create_pest_analysis_tool(),
+            self._create_value_chain_analysis_tool(),
         ]
         
         self.agent = self._create_agent()
@@ -233,6 +239,110 @@ class StrategyAgent:
 """
         )
     
+    def _create_pest_analysis_tool(self) -> StructuredTool:
+        """PEST分析ツールを作成"""
+        
+        def execute_pest(
+            political_data: str,
+            economic_data: str,
+            social_data: str,
+            technological_data: str
+        ) -> str:
+            """
+            PEST分析を実行
+            
+            Args:
+                political_data: 政治的要因データ（JSON配列文字列）
+                economic_data: 経済的要因データ（JSON配列文字列）
+                social_data: 社会的要因データ（JSON配列文字列）
+                technological_data: 技術的要因データ（JSON配列文字列）
+            
+            Returns:
+                分析結果（文字列）
+            """
+            try:
+                # JSON文字列をパース
+                political = json.loads(political_data)
+                economic = json.loads(economic_data)
+                social = json.loads(social_data)
+                technological = json.loads(technological_data)
+                
+                # PEST分析を実行
+                analyzer = PESTAnalysis()
+                result = analyzer.analyze(political, economic, social, technological)
+                
+                # 結果を整形
+                formatted_result = analyzer.format_result(result)
+                
+                return formatted_result
+            except json.JSONDecodeError as e:
+                return f"JSONパースエラー: {str(e)}"
+            except Exception as e:
+                return f"分析エラー: {str(e)}"
+        
+        return StructuredTool.from_function(
+            func=execute_pest,
+            name="execute_pest_analysis",
+            description="""PEST分析を実行してマクロ環境を分析する。
+
+引数はすべてJSON配列文字列形式で渡してください：
+- political_data: [{"factor": "要因名", "description": "説明", "impact": "プラス/マイナス/中立", "timeframe": "short-term/medium-term/long-term"}]
+- economic_data: [{"factor": "要因名", "description": "説明", "impact": "プラス/マイナス/中立", "timeframe": "short-term/medium-term/long-term"}]
+- social_data: [{"factor": "要因名", "description": "説明", "impact": "プラス/マイナス/中立", "timeframe": "short-term/medium-term/long-term"}]
+- technological_data: [{"factor": "要因名", "description": "説明", "impact": "プラス/マイナス/中立", "timeframe": "short-term/medium-term/long-term"}]
+"""
+        )
+    
+    def _create_value_chain_analysis_tool(self) -> StructuredTool:
+        """バリューチェーン分析ツールを作成"""
+        
+        def execute_value_chain(
+            primary_activities_data: str,
+            support_activities_data: str,
+            cost_data: str = "{}"
+        ) -> str:
+            """
+            バリューチェーン分析を実行
+            
+            Args:
+                primary_activities_data: 主活動データ（JSON文字列）
+                support_activities_data: 支援活動データ（JSON文字列）
+                cost_data: コストデータ（JSON文字列、オプション）
+            
+            Returns:
+                分析結果（文字列）
+            """
+            try:
+                # JSON文字列をパース
+                primary_activities = json.loads(primary_activities_data)
+                support_activities = json.loads(support_activities_data)
+                cost = json.loads(cost_data) if cost_data else {}
+                
+                # バリューチェーン分析を実行
+                analyzer = ValueChainAnalysis()
+                result = analyzer.analyze(primary_activities, support_activities, cost)
+                
+                # 結果を整形
+                formatted_result = analyzer.format_result(result)
+                
+                return formatted_result
+            except json.JSONDecodeError as e:
+                return f"JSONパースエラー: {str(e)}"
+            except Exception as e:
+                return f"分析エラー: {str(e)}"
+        
+        return StructuredTool.from_function(
+            func=execute_value_chain,
+            name="execute_value_chain_analysis",
+            description="""バリューチェーン分析を実行して価値創造ポイントと競争優位性を特定する。
+
+引数はすべてJSON文字列形式で渡してください：
+- primary_activities_data: {"inbound_logistics": {"description": "...", "value_added": "..."}, "operations": {...}, "outbound_logistics": {...}, "marketing_sales": {...}, "service": {...}}
+- support_activities_data: {"infrastructure": {"description": "...", "value_added": "..."}, "hrm": {...}, "technology": {...}, "procurement": {...}}
+- cost_data: {"inbound_logistics_cost": 数値, "operations_cost": 数値, ...} (オプション)
+"""
+        )
+    
     async def analyze(self, project_data: Dict[str, Any]) -> Dict[str, Any]:
         """
         戦略分析を実行
@@ -272,7 +382,7 @@ class StrategyAgent:
         input_text += """
 
 【分析手順】
-1. 提供されたデータを使って適切なフレームワーク（3C、SWOT、5Forces）を実行してください
+1. 提供されたデータを使って適切なフレームワーク（3C、SWOT、5Forces、PEST、バリューチェーン）を実行してください
 2. 分析結果から戦略的洞察を導出してください
 3. 具体的で実行可能な戦略提案をまとめてください
 """
@@ -315,7 +425,7 @@ class StrategyAgent:
         input_text += """
 
 【分析手順】
-1. 提供されたデータを使って適切なフレームワーク（3C、SWOT、5Forces）を実行してください
+1. 提供されたデータを使って適切なフレームワーク（3C、SWOT、5Forces、PEST、バリューチェーン）を実行してください
 2. 分析結果から戦略的洞察を導出してください
 3. 具体的で実行可能な戦略提案をまとめてください
 """
